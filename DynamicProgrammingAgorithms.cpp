@@ -11,30 +11,24 @@ vector<vector<int>> readTriangle(string, int);
 void printTriangle(vector<vector<int>>);
 vector<vector<int>> copyTriangle(vector<vector<int>>);
 void calcTriangle(vector<vector<int>>&, vector<vector<int>>&);
-pair<vector<int>, int> findVisitedNodes(vector<vector<int>>&, vector<vector<int>>&);
+pair<vector<pair<int, int>>, int> findVisitedNodes(vector<vector<int>>&, vector<vector<int>>&);
+void startFindMaxPathInTriangle();
+
+void findQuantityOfOperations();
+
 
 void main()
 {
-    vector<vector<int>> triangle = fillRandomTriangle(5);
-    printTriangle(triangle);
-    vector<vector<int>> newTriangle = copyTriangle(triangle);
-    calcTriangle(triangle, newTriangle);
-    printTriangle(newTriangle);
-    pair<vector<int>, int> result = findVisitedNodes(triangle, newTriangle);
-    cout << "Visited nodes" << endl;
-    for (int i = 0; i < result.first.size(); i++)
-    {
-        cout << result.first[i] << " ";
-    }
-    cout << "\nMax sum of load " << result.second << endl;
+    findQuantityOfOperations();
 }
+
 
 vector<vector<int>> readTriangle(string fileName, int depth) {
     vector<vector<int>> trangle;
     ifstream fin;
     string line;
 
-    fin.open("triangle.txt");
+    fin.open(fileName);
 
     for (int i = 0; i < depth; i++)
     {
@@ -123,8 +117,8 @@ void calcTriangle(vector<vector<int>>& triangle, vector<vector<int>>& newTriangl
     }
 }
 
-pair<vector<int>, int> findVisitedNodes(vector<vector<int>>& originalTriangle, vector<vector<int>>& newTriangle) {
-    vector<int> visitedNodes;
+pair<vector<pair<int, int>>, int> findVisitedNodes(vector<vector<int>>& originalTriangle, vector<vector<int>>& newTriangle) {
+    vector<pair<int, int>> visitedNodes;
 
     int finalMaxIndex, finalMaxElem = newTriangle[newTriangle.size() - 1][0];
     for (int i = 0; i < newTriangle[newTriangle.size() - 1].size(); i++)
@@ -135,7 +129,7 @@ pair<vector<int>, int> findVisitedNodes(vector<vector<int>>& originalTriangle, v
         }
     }
 
-    visitedNodes.push_back(finalMaxIndex - 1);
+    visitedNodes.push_back(make_pair(newTriangle.size() - 1, finalMaxIndex - 1));
 
     int elemForSearch;
     for (int i = originalTriangle.size() - 1; i > 1; i--)
@@ -149,11 +143,84 @@ pair<vector<int>, int> findVisitedNodes(vector<vector<int>>& originalTriangle, v
                 break;
             }
         }
-        visitedNodes.push_back(finalMaxIndex - 1);
+        visitedNodes.push_back(make_pair(i - 1, finalMaxIndex - 1));
     }
 
-    visitedNodes.push_back(0);
+    visitedNodes.push_back(make_pair(0, 0));
     reverse(visitedNodes.begin(), visitedNodes.end());
 
     return make_pair(visitedNodes, finalMaxElem);
+}
+
+void startFindMaxPathInTriangle() {
+    int depth;
+    cout << "Enter a depth of the triangle ";
+    cin >> depth;
+    cout << endl;
+
+    vector<vector<int>> triangle = fillRandomTriangle(depth);
+    printTriangle(triangle);
+
+    vector<vector<int>> newTriangle = copyTriangle(triangle);
+    calcTriangle(triangle, newTriangle);
+
+    printTriangle(newTriangle);
+    pair<vector<pair<int, int>>, int> result = findVisitedNodes(triangle, newTriangle);
+
+    vector<pair<int, int>> firstAnswerElem = result.first;
+    int secondAnswerElem = result.second;
+
+    cout << "Visited nodes" << endl;
+    for (int i = 0; i < firstAnswerElem.size(); i++)
+    {
+        cout << firstAnswerElem[i].first << ";" << firstAnswerElem[i].second << " ";
+    }
+    cout << "\nMax sum of load " << result.second << endl;
+    cout << endl;
+}
+
+
+void findQuantityOfOperations() {
+    int degree;
+
+    while (true)
+    {
+        cout << "Enter a degree ";
+        cin >> degree;
+        cout << endl;
+
+        if (degree <= 0) {
+            cout << "Invalid input" << endl;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    int* arrayDegree = new int[degree + 1] {};
+    for (int i = 0; i < degree + 1; i++)
+    {
+        arrayDegree[i] = 0;
+    }
+
+    for (int i = 2; i <= degree; i++)
+    {
+        arrayDegree[i] = arrayDegree[i - 1] + 1;
+        for (int j = 2; j <= i - 1; j++)
+        {
+            arrayDegree[i] = min(arrayDegree[i], arrayDegree[j] + arrayDegree[i - j] + 1);
+            if (i % j == 0)
+            {
+                arrayDegree[i] = min(arrayDegree[i], arrayDegree[i / j] + j - 1);
+            }
+        }
+    }
+
+    for (int i = 2; i <= degree; i++)
+    {
+        cout << arrayDegree[i] << " ";
+    }
+
+    delete[] arrayDegree;
 }
