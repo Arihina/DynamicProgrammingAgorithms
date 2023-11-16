@@ -8,9 +8,11 @@
 
 using namespace std;
 
+template<typename T> void printMatrix(vector<vector<T>>);
+
 vector<vector<int>> fillRandomTriangle(int);
 vector<vector<int>> readTriangle(string, int);
-void printTriangle(vector<vector<int>>);
+template<typename T> void printTriangle(vector<vector<T>>);
 vector<vector<int>> copyTriangle(vector<vector<int>>);
 void calcTriangle(vector<vector<int>>&, vector<vector<int>>&);
 pair<vector<pair<int, int>>, int> findVisitedNodesInTriangle(vector<vector<int>>&, vector<vector<int>>&);
@@ -19,7 +21,6 @@ void startFindMaxPathInTriangle();
 void startFindMinQuantityOfOperations();
 
 vector<vector<bool>> createBoolMatrix(string, string);
-template<typename T> void printMatrix(vector<vector<T>>);
 vector<vector<int>> copyMatrix(vector<vector<bool>>);
 vector<vector<int>> calculateMatrix(vector<vector<int>>);
 vector<pair<int, int>> findAllСhainIndexes(vector<vector<int>>, vector<vector<bool>>);
@@ -27,7 +28,7 @@ string findMaxChain(vector<pair<int, int>>, vector<vector<bool>>, string);
 void startAlgorithmNeedlemanWunsch();
 
 vector<vector<int>> calculateBackpackMatrix(vector<int>&, vector<int>&, int, int);
-void printVector(vector<int>);
+template<typename T> void printVector(vector<T>);
 vector<int> readVectorFromFile(string, int);
 void startSolveTaskAboutBackpack();
 
@@ -45,6 +46,19 @@ void main()
     startAlgorithmNeedlemanWunsch();
     startSolveTaskAboutBackpack();
     startFindMinPathInSquare();
+}
+
+
+template<typename T> void printMatrix(vector<vector<T>> matrix) {
+    for (int i = 0; i < matrix.size(); i++)
+    {
+        for (int j = 0; j < matrix[i].size(); j++)
+        {
+            cout << matrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
 }
 
 
@@ -90,7 +104,7 @@ vector<vector<int>> fillRandomTriangle(int depth) {
     return trangle;
 }
 
-void printTriangle(vector<vector<int>> triangle) {
+template<typename T> void printTriangle(vector<vector<T>> triangle) {
     for (int i = 0; i < triangle.size(); i++)
     {
         for (int j = 0; j < triangle[i].size(); j++)
@@ -262,18 +276,6 @@ vector<vector<bool>> createBoolMatrix(string str1, string str2) {
     }
 
     return boolMatrix;
-}
-
-template<typename T> void printMatrix(vector<vector<T>> matrix) {
-    for (int i = 0; i < matrix.size(); i++)
-    {
-        for (int j = 0; j  < matrix[i].size(); j++)
-        {
-            cout << matrix[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
 }
 
 vector<vector<int>> copyMatrix(vector<vector<bool>> matrix) {
@@ -462,7 +464,7 @@ else
     return matrix;
 }
 
-void printVector(vector<int> vect) {
+template<typename T> void printVector(vector<T> vect) {
     for (int i = 0; i < vect.size(); i++)
     {
         cout << vect[i] << " ";
